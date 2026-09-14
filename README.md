@@ -2,7 +2,7 @@
 
 A Claude Code workflow for taking a roadmap item through specification, implementation, independent validation, defect fixing, and final review. The main session coordinates six specialist agents and stops at `READY FOR HUMAN REVIEW`, where the owner reviews the results, marks the roadmap phase complete, and opens and merges the pull request.
 
-This repository contains the workflow configuration, agent instructions, a callable skill, and a Git guard. Application code, project specifications, tests, and CI configuration must be supplied by the project adopting it.
+This repository contains the workflow configuration, agent instructions, constitution and feature-cycle skills, and a Git guard. Application code, stakeholder input, tests, and CI configuration must be supplied by the project adopting it; `/sdd` helps draft its foundation specifications.
 
 ## Core principles
 
@@ -29,6 +29,8 @@ The workflow targets the smallest independently useful feature that can be speci
     ├── rules/
     │   └── autonomous-sdd.md     # Authoritative lifecycle and Git policy
     ├── skills/
+    │   ├── sdd/
+    │   │   └── SKILL.md          # Interactive constitution setup
     │   └── sdd-next/
     │       └── SKILL.md          # Explicitly invoked workflow entry point
     ├── agents/
@@ -46,7 +48,7 @@ The workflow targets the smallest independently useful feature that can be speci
 
 1. Use this repository as a starting point, or copy its `.claude/` directory into an existing Git project. If that project already has Claude Code configuration, merge the instructions, permissions, and hooks with its existing settings.
 2. Make Claude Code, Git, and Node.js available in the project environment. The registered hook invokes `node` and uses Node.js built-in modules; it has no package dependencies to install.
-3. Create the project documents described below and define the application's development and validation commands.
+3. Supply stakeholder requirements and use `/sdd` to draft the project documents described below. Define the application's development and validation commands.
 4. Configure an `origin` remote and access for feature-branch pushes. Add the CI and Git hook protections expected by the workflow.
 5. Open Claude Code in the project directory and invoke:
 
@@ -60,7 +62,19 @@ The workflow targets the smallest independently useful feature that can be speci
    /sdd-next <roadmap item or scope hint>
    ```
 
-The skill runs only when explicitly invoked. Its argument is a hint checked against the roadmap and project rules; it does not bypass specification or approval.
+The `/sdd-next` skill runs only when explicitly invoked. Its argument is a hint checked against the roadmap and project rules; it does not bypass specification or approval.
+
+### Draft the constitution with `/sdd`
+
+In Claude Code, provide the project name, description, and stakeholder requirements filename:
+
+```text
+/sdd I am writing [project name], [project description]. Look in [business requirement md filename] for input from stakeholders.
+```
+
+The skill reads the source and repository context, then uses `AskUserQuestion` with questions grouped into **Mission**, **Tech stack**, and **Roadmap**. It must receive answers for all three groups before writing anything to disk.
+
+It then drafts `specs/mission.md`, `specs/tech-stack.md`, and `specs/roadmap.md`, with implementation ordered into very small, demonstrable phases. It ends after checking the documents; invoke `/sdd-next` separately when ready to begin a feature cycle.
 
 ### Project documents to supply
 

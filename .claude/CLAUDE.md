@@ -2,6 +2,12 @@
 
 This project uses Spec-Driven Development.
 
+## Constitution setup
+
+Use `/sdd` to draft `specs/mission.md`, `specs/tech-stack.md`, and `specs/roadmap.md` from the project description and a named stakeholder requirements file.
+
+During this setup skill, questions go directly to the user through `AskUserQuestion`, grouped into Mission, Tech stack, and Roadmap. The user's answers to all three groups are required before any writes. This is an exception to the in-phase decision delegation below; `/sdd` does not start an autonomous feature cycle.
+
 ## Autonomous SDD
 
 For autonomous feature development, follow the workflow defined in:
